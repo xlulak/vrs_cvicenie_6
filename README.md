@@ -62,3 +62,8 @@ int main()
 - využitie to má v prípade, ak sa chce FW nejakého typu MCU portovať na iný typ MCU - FW je jednoduchšie prenášaťelný na iné zariadenia, je prehľadnejší a jednoduchší na údržbu
 
 - príklad na callback funkciu je v ukážkovom projekte pre toto cvičenie (obsluhuje prerušenie od USART)
+
+# Zadanie
+- naprogramujte MCU tak, aby ste prikazmi prijatými cez USART vedeli ovladat LED
+- ak MCU prijme cez USART znak 'f' - LED sa vypne
+- ak MCU prijme cez USART znak 'n' - LED sa zapne
