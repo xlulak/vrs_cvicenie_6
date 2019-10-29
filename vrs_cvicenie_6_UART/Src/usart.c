@@ -73,7 +73,10 @@ void MX_USART2_UART_Init(void)
 
 void rx_usart2(uint8_t ch)
 {
-	usart2_callback(ch);
+	if (usart2_callback != 0)
+	{
+		usart2_callback(ch);
+	}
 }
 
 /* USER CODE BEGIN 1 */
