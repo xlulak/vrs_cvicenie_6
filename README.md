@@ -50,7 +50,7 @@ void B(void (*ptr)())
   
 int main() 
 { 
-   void (*ptr)() = &A; 
+   void (*ptr)() = A; 
    B(ptr); 
    
    return 0; 
