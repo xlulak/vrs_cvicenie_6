@@ -26,7 +26,8 @@
 
 void process_serial_data_read(uint8_t ch);
 void SystemClock_Config(void);
-
+void posliSlovo(char *slovo);
+void posliStav(uint8_t stav);
 void process_serial_data(uint8_t ch);
 
 int main(void)
@@ -48,21 +49,13 @@ int main(void)
 
 
 
-  char tx_LED_state = 'u';
 
   while (1)
   {
-	  	if ( LL_GPIO_IsOutputPinSet(GPIOB, LL_GPIO_PIN_3)){
-	  		tx_LED_state ='o';
-	  	}else
-	  	{
-	  		tx_LED_state='f';
-	  	}
-	 // tx_LED_state = LL_GPIO_IsOutputPinSet(GPIOB, LL_GPIO_PIN_3);
-	  LL_USART_TransmitData8(USART2, tx_LED_state);
-	  LL_mDelay(50);
+	  	posliStav( LL_GPIO_IsOutputPinSet(GPIOB, LL_GPIO_PIN_3));
   }
 }
+
 
 /**
   * @brief System Clock Configuration
@@ -99,32 +92,6 @@ void SystemClock_Config(void)
   LL_SetSystemCoreClock(8000000);
 }
 
-
-void process_serial_data(uint8_t ch)
-{
-	static uint8_t count = 0;
-
-	if(ch == 'a')
-	{
-		count++;
-
-		if(count >= 3)
-		{
-			if((LL_GPIO_ReadInputPort(GPIOB) & (1 << 3)) >> 3)
-			{
-				LL_GPIO_ResetOutputPin(GPIOB, LL_GPIO_PIN_3);
-			}
-			else
-			{
-				LL_GPIO_SetOutputPin(GPIOB, LL_GPIO_PIN_3);
-			}
-
-			count = 0;
-			return;
-		}
-	}
-}
-
 char string[6];
 
 void vynuluj_string(){
@@ -159,8 +126,6 @@ void load(uint8_t ch)
 
 void process_serial_data_read(uint8_t ch)
 {
-//	static uint8_t count = 0;
-
 	static char on[]="ledON";
 	static char off[]="ledOFF";
 	load(ch);
@@ -178,9 +143,28 @@ void process_serial_data_read(uint8_t ch)
 		LL_GPIO_ResetOutputPin(GPIOB, LL_GPIO_PIN_3);
 		vynuluj_string();
 	}
-
 }
 
+
+void posliSlovo(char *slovo){
+	int i;
+	for(i=0;i<=strlen(slovo);i++)
+	{
+		LL_USART_TransmitData8(USART2,slovo[i]);
+		LL_mDelay(10);
+	}
+}
+
+void posliStav(uint8_t stav){
+	char LED_ON[]="svieti  ";
+	char LED_OFF[]="nesvieti  ";
+	if(stav){
+		posliSlovo(LED_ON);
+	}else {
+		posliSlovo(LED_OFF);
+	}
+ 	LL_mDelay(1000);
+}
 
 
 
