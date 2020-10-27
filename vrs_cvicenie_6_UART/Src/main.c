@@ -50,9 +50,7 @@ int main(void)
 	  LL_USART_TransmitData8(USART2, tx_data++);
 	  tx_data == ('z' + 1) ? tx_data = 'a' : tx_data;
 
-	  LL_mDelay(10);
-
-	  LL_GPIO_ResetOutputPin(GPIOB, LL_GPIO_PIN_3);
+	  LL_mDelay(50);
   }
 }
 
@@ -100,9 +98,17 @@ void process_serial_data(uint8_t ch)
 	{
 		count++;
 
-		if(count > 3)
+		if(count >= 3)
 		{
-			LL_GPIO_SetOutputPin(GPIOB, LL_GPIO_PIN_3);
+			if((LL_GPIO_ReadInputPort(GPIOB) & (1 << 3)) >> 3)
+			{
+				LL_GPIO_ResetOutputPin(GPIOB, LL_GPIO_PIN_3);
+			}
+			else
+			{
+				LL_GPIO_SetOutputPin(GPIOB, LL_GPIO_PIN_3);
+			}
+
 			count = 0;
 			return;
 		}
