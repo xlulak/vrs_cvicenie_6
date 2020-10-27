@@ -160,13 +160,21 @@ void load(uint8_t ch)
 void process_serial_data_read(uint8_t ch)
 {
 //	static uint8_t count = 0;
+
 	static char on[]="ledON";
 	static char off[]="ledOFF";
 	load(ch);
-	if(strcmp(on,string)==0){
+	char *new_on,*new_off;
+	new_on = strstr(string,on);
+	new_off = strstr(string,off);
+
+	if(strcmp(on,string)==0 || strcmp(on,new_on)==0)
+	{
 		LL_GPIO_SetOutputPin(GPIOB, LL_GPIO_PIN_3);
 		vynuluj_string();
-	}else if(strcmp(off,string)==0){
+	}
+	else if(strcmp(off,string)==0 || strcmp(off,new_off)==0)
+	{
 		LL_GPIO_ResetOutputPin(GPIOB, LL_GPIO_PIN_3);
 		vynuluj_string();
 	}
