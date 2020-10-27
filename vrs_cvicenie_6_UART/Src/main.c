@@ -43,14 +43,13 @@ int main(void)
 
   USART2_RegisterCallback(process_serial_data);
 
-  char tx_data = 'a';
+  int tx_LED_state = 0;
 
   while (1)
   {
-	  LL_USART_TransmitData8(USART2, tx_data++);
-	  tx_data == ('z' + 1) ? tx_data = 'a' : tx_data;
-
-	  LL_mDelay(50);
+	  tx_LED_state = LL_GPIO_IsOutputPinSet(GPIOB, LL_GPIO_PIN_3);
+	  LL_USART_TransmitData8(USART2, tx_LED_state);
+	  LL_mDelay(1000);
   }
 }
 
