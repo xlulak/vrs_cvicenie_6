@@ -127,17 +127,20 @@ void process_serial_data(uint8_t ch)
 
 char string[6];
 
+void vynuluj_string(){
+	  memset(string, 0, strlen(string));								//vynuluje políČko
+}
 
 void PosunPole()
 {
 	int i=0;
-	int l =strlen(string);
-
-	if (l==6){							//pre istotu
-		for(i=0;i==5;i++){
-			string[i]=string[i+1];
+	char h[6];
+	strcpy(h,string);		// string ulozi do h
+	vynuluj_string();
+							//pre istotu
+		for(i=0;i<5;i++){	//5 znakov sa prepise
+			string[i]=h[i+1];
 		}
-	}
 }
 
 void load(uint8_t ch)
@@ -153,9 +156,6 @@ void load(uint8_t ch)
 	}
 }
 
-void vynuluj_string(){
-	  memset(string, 0, strlen(string));								//vynuluje políČko
-}
 
 void process_serial_data_read(uint8_t ch)
 {
