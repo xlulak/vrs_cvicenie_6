@@ -31,14 +31,14 @@ void process_serial_data(uint8_t ch);
 int main(void)
 {
 
-  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);		//nastavenie hodin , povolenie
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
 
   NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
 
   SystemClock_Config();
 
-  MX_GPIO_Init();
+  MX_GPIO_Init();											//nastavenie GPIO pinu
   MX_USART2_UART_Init();
 
   USART2_RegisterCallback(process_serial_data);
