@@ -22,8 +22,9 @@
 #include "main.h"
 #include "usart.h"
 #include "gpio.h"
+#include "string.h"
 
-
+void process_serial_data_read(uint8_t ch);
 void SystemClock_Config(void);
 
 void process_serial_data(uint8_t ch);
@@ -31,25 +32,35 @@ void process_serial_data(uint8_t ch);
 int main(void)
 {
 
-  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);		//nastavenie hodin , povolenie
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);			//nastavenie hodin , povolenie
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
 
   NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
 
   SystemClock_Config();
 
-  MX_GPIO_Init();											//nastavenie GPIO pinu
+  MX_GPIO_Init();												//nastavenie GPIO pinu
   MX_USART2_UART_Init();
 
-  USART2_RegisterCallback(process_serial_data);
+  USART2_RegisterCallback(process_serial_data_read);			//toto som modifikoval na _read
 
-  int tx_LED_state = 0;
+
+
+
+
+  char tx_LED_state = 'u';
 
   while (1)
   {
-	  tx_LED_state = LL_GPIO_IsOutputPinSet(GPIOB, LL_GPIO_PIN_3);
+	  	if ( LL_GPIO_IsOutputPinSet(GPIOB, LL_GPIO_PIN_3)){
+	  		tx_LED_state ='o';
+	  	}else
+	  	{
+	  		tx_LED_state='f';
+	  	}
+	 // tx_LED_state = LL_GPIO_IsOutputPinSet(GPIOB, LL_GPIO_PIN_3);
 	  LL_USART_TransmitData8(USART2, tx_LED_state);
-	  LL_mDelay(1000);
+	  LL_mDelay(50);
   }
 }
 
@@ -113,6 +124,58 @@ void process_serial_data(uint8_t ch)
 		}
 	}
 }
+
+char string[6];
+
+
+void PosunPole()
+{
+	int i=0;
+	int l =strlen(string);
+
+	if (l==6){							//pre istotu
+		for(i=0;i==5;i++){
+			string[i]=string[i+1];
+		}
+	}
+}
+
+void load(uint8_t ch)
+{
+	int l=strlen(string);
+
+	if(l==6){
+				PosunPole();
+				string[5]=ch;
+	}else
+	{
+				string[l]=ch;
+	}
+}
+
+void vynuluj_string(){
+	  memset(string, 0, strlen(string));								//vynuluje políČko
+}
+
+void process_serial_data_read(uint8_t ch)
+{
+//	static uint8_t count = 0;
+	static char on[]="ledON";
+	static char off[]="ledOFF";
+	load(ch);
+	if(strcmp(on,string)==0){
+		LL_GPIO_SetOutputPin(GPIOB, LL_GPIO_PIN_3);
+		vynuluj_string();
+	}else if(strcmp(off,string)==0){
+		LL_GPIO_ResetOutputPin(GPIOB, LL_GPIO_PIN_3);
+		vynuluj_string();
+	}
+
+}
+
+
+
+
 
 
 /**

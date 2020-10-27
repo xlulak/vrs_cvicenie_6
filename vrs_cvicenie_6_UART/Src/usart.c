@@ -23,7 +23,7 @@
 
 static void (* usart2_callback)(uint8_t) = 0;
 
-void USART2_RegisterCallback(void *callback)
+void USART2_RegisterCallback(void *callback)		// call back na tu funckiu
 {
 	usart2_callback = callback;
 }
